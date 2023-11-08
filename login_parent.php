@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         session_start();
         $_SESSION['useremail'] = $email;
 
-        header("Location: Teacher-First-Page.php"); // Redirect to the home page
+        header("Location: Parent-First-Page.php"); // Redirect to the home page
         exit;
     } else {
         // Login failed
