@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     } else {
         // Login failed
-        $error_message = "Invalid email or password. Please try again.";
+        echo "<script>alert('Incorrect Password');</script>";
     }
 }
 ?>
