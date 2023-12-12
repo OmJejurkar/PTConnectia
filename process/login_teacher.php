@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
            var header = document.createElement("div");
            header.classList.add("header");
            var heading = document.createElement("h1");
-           heading.innerText = "Error";
+           heading.innerText = "Login Failed";
            header.appendChild(heading);
 
            var body = document.createElement("div");
