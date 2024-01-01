@@ -42,7 +42,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../CSS/PTC.css">
+    <script>
+</script>
+
 </head>
+<body>
         <div class="tfp-div">
                 <button class="big-button" >Time Table</button>
                 <button class="big-button" >Add Achivement</button>
@@ -61,7 +65,7 @@
             <label class="half-label">Post:<?php echo $post;?></label>
             <div class="footer">  
             <button class="small-button">edit</button>
-            <button  class="small-button">log out</button>
+            <button  class="small-button" onclick = "logout()">log out</button>
             </div>
         </div>
         <div class="out ">

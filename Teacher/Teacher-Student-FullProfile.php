@@ -1,49 +1,59 @@
 <?php
     // Include the database connection file
-    require_once "../process/db.php";
+require_once "../process/db.php";
 
-    session_start(); // Start the session (if not started)
+session_start(); // Start the session (if not started)
 
-    // Check if the user is logged in (you might have your own logic here)
-    if (!isset($_SESSION['useremail'])) {
-        header("Location: login.php");
-        exit;
-    }
+// Check if the user is logged in (you might have your own logic here)
+if (!isset($_SESSION['useremail'])) {
+    header("Location: login.php");
+    exit;
+}
 
-    // Fetch user details from the database based on the logged-in user's email
-    $useremail = $_SESSION['useremail'];
-    $query = "SELECT * FROM student WHERE Email = 'student1@gmail.com'";
-    $stmt = $conn->prepare($query);
+// Fetch user details from the database based on the logged-in user's enrollment number
+$enrollmentNumber = $_SESSION['enrollment']; // Assuming the enrollment number is stored in the session
+$query = "SELECT * FROM student WHERE Enrollment = ?";
+$stmt = $conn->prepare($query);
 
-    // Check if the prepare() call succeeded
-    if ($stmt) {
-        //$stmt->bind_param("s", $useremail); // Bind the parameter correctly
-        $stmt->execute();
-        $result = $stmt->get_result();
+// Check if the prepare() call succeeded
+if ($stmt) {
+    $stmt->bind_param("s", $enrollmentNumber); // Bind the parameter correctly
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
-            $username = $row['Name'];
-            $rollno = $row['Rollno'];
-            $div = $row['Div'];
-            $enrollment = $row['Enrolment'];
-            $email = $row['Email'];
-            $dob = $row['DOB'];
-            $gender = $row['Gender'];
-            $blood = $row['Blood'];
-            $cast = $row['Cast'];
-            $subcast = $row['Subcast'];
-            $address = $row['Address'];
+    if ($result->num_rows == 1) {
+        $row = $result->fetch_assoc();
+        $username = $row['Name'];
+        $rollno = $row['Rollno'];
+        $div = $row['Div'];
+        $enrollment = $row['Enrollment']; // Enrollment number
+        $email = $row['Email'];
+        $dob = $row['DOB'];
+        $gender = $row['Gender'];
+        $blood = $row['Blood'];
+        $cast = $row['Cast'];
+        $subcast = $row['Subcast'];
+        $address = $row['Address'];
 
-        } else {
-            // Handle if user data is not found
-            $username = "N/A";
-            $post = "N/A";
-        }
     } else {
-        // Handle prepare() error if any
-        echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
+        // Handle if student data is not found
+        $username = "N/A";
+        $rollno = "N/A";
+        $div = "N/A";
+        $enrollment = "N/A";
+        $email = "N/A";
+        $dob = "N/A";
+        $gender = "N/A";
+        $blood = "N/A";
+        $cast = "N/A";
+        $subcast = "N/A";
+        $address = "N/A";
     }
+} else {
+    // Handle prepare() error if any
+    echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
+}
+
 ?>
 
 <!DOCTYPE html>
