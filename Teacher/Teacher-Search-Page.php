@@ -1,61 +1,64 @@
-<?php
-// Include the database connection file
-require_once "../process/db.php";
-
-session_start(); // Start the session (if not started)
-
-// Check if the user is logged in (you might have your own logic here)
-if (!isset($_SESSION['useremail'])) {
-    header("Location: login.php");
-    exit;
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['search'])) {
-    $search = $_GET['search'];
-
-    // Prepare and execute a query to search for students
-    $query = "SELECT Enrollment, Name FROM student WHERE Enrollment LIKE ?";
-    $stmt = $conn->prepare($query);
-
-    if ($stmt) {
-        $searchTerm = "%$search%";
-        $stmt->bind_param("s", $searchTerm);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            echo "<h1>Search Results</h1>";
-            while ($row = $result->fetch_assoc()) {
-                // Output student data dynamically
-                echo "<button class='big-button' onclick='window.location.href=\"Teacher-Student-Profile-Page.html?id={$row['Enrollment']}\"'>{$row['Name']}</button>";
-            }
-        } else {
-            echo "No students found.";
-        }
-    } else {
-        echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../CSS/PTC.css"> 
+    <title>Search</title>
+    <link rel="stylesheet" href="../CSS/PTC.css">
 </head>
 <body>
-    <form action="" method="GET">
-        <div class="div-group">
-            <svg class="icon-tsp" aria-hidden="true" viewBox="0 0 24 24">
-                <img src="../image/find.png" alt="find" class="img-tsp">
-            </svg>
-            <input placeholder="Search Parent || Child" type="search" class="input-tsp" name="search">
-            <button type="submit" class="big-button">Search</button>
-            <!-- Output student buttons dynamically based on search results -->
-            <!-- PHP will generate buttons here based on search results -->
-        </div>
-    </form>
+<div class="relative">
+    <input type="text" placeholder="Search..." class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:shadow-outline" />
+    <ul class="absolute left-0 right-0 mt-1 bg-white border rounded-lg shadow-md hidden">
+        <li class="px-4 py-2 hover:bg-zinc-100 cursor-pointer">Suggestion 1</li>
+        <li class="px-4 py-2 hover:bg-zinc-100 cursor-pointer">Suggestion 2</li>
+        <li class="px-4 py-2 hover:bg-zinc-100 cursor-pointer">Suggestion 3</li>
+    </ul>
+</div>
+<script>
+    const input = document.querySelector('input');
+    const suggestions = document.querySelector('ul');
+
+    input.addEventListener('input', () => {
+        suggestions.classList.remove('hidden');
+        // Implement autocomplete logic here based on input value
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!suggestions.contains(e.target)) {
+            suggestions.classList.add('hidden');
+        }
+    });
+</script>
+<?php
+require_once "../process/db.php";
+
+// Check if search query is set
+if (isset($_GET['query'])) {
+    $query = $_GET['query'];
+
+    // Search the database
+    $sql = "SELECT * FROM student WHERE Name LIKE '%$query%' ";
+    $result = mysqli_query($sql);
+
+    // Check if there are results
+    if (mysqli_num_rows($result) > 0) {
+        // Output data of each row
+        while($row = mysqli_fetch_assoc($result)) {
+            echo "<div class='search-result'>";
+            echo "<h2>" . $row["title"] . "</h2>";
+            echo "</div>";
+        }
+    } else {
+        echo "No results found.";
+    }
+
+    // Close connection
+    mysqli_close($conn);
+} else {
+    echo "No search query provided.";
+}
+?>
+
 </body>
 </html>
